@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+    
+    <h1 class="dashboard-title">
+        Dashboard
+    </h1>
+    
+    <p class="dashboard-welcome">
+        Hello <b>{{ user.username }}</b>!
+    </p>
+    
+    <!-- Κάρτα με τις συσκευές -->
+    <div class="card dashboard-card">
+            <h2 class="device-title">Available Devices</h2>
+            
+            <div class="device-selection-container">
+                {% for d in devices %}
+                    <a href="?device={{ d.pk }}" class="btn-action btn-device {% if selected_device and selected_device.pk == d.pk %}active{% endif %}">
+                    {{ d.name }}
+                    <span class="device-mac">{{ d.mac_address }}</span>
+                    </a>
+                {% endfor %}
+                
+                {% if not devices %}
+                    <p class="text-muted">No devices available.</p>
+                {% endif %}
+            </div>
+        </div>
+
+    <h2 class="chart-section-title">Live Charts</h2>
+    <div class="charts-row-3">
+        <!-- Γράφημα: Τάση (V) -->
+        <div class="card dashboard-card clickable-card" onclick="openModal('voltage')">
+            <canvas id="voltageChart"></canvas>
+        </div>
+        <!-- Γράφημα: Ρεύμα (A) -->
+        <div class="card dashboard-card clickable-card" onclick="openModal('current')">
+            <canvas id="currentChart"></canvas>
+        </div>
+        <!-- Γράφημα: Θερμοκρασία (°C) -->
+          <div class="card dashboard-card clickable-card" onclick="openModal('temp')">
+            <canvas id="tempChart"></canvas>
+        </div>
+    </div>
+    <div class="charts-row-3"> 
+        <div class="card dashboard-card clickable-card kpi-card" onclick="openModal('soc')" title="Κλικ για γράφημα">
+            <div class="chart-label">State of Charge (SoC)</div>
+            <div id="socValue" class="display-number text-success">--%</div>
+            <div class="progress-bar-bg">
+                <div id="socBar" class="progress-bar-fill" style="background-color: #2ECC71; width: 0%;"></div>
+            </div>
+        </div>
+
+        <div class="card dashboard-card clickable-card kpi-card" onclick="openModal('soh')" title="Κλικ για γράφημα">
+            <div class="chart-label">State of Health (SoH)</div>
+            <div id="sohValue" class="display-number text-purple">--%</div>
+            <div class="progress-bar-bg">
+                <div id="sohBar" class="progress-bar-fill" style="background-color: #9B59B6; width: 0%;"></div>
+            </div>
+        </div>
+
+        <div class="card dashboard-card clickable-card kpi-card" onclick="openModal('power')" title="Κλικ για γράφημα">
+            <div class="chart-label">Power (W)</div>
+            <div id="powerValue" class="display-number text-warning">-- W</div>
+        </div>
+
+    </div>
+    
+
+</div>
+<div id="chartModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <div class="modal-canvas-wrapper">
+            <canvas id="modalCanvas"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Δεδομένα από το Django
+    const labels = JSON.parse('{{ timestamps|safe }}');
+    const voltageData = JSON.parse('{{ voltage_data|safe }}');
+    const currentData = JSON.parse('{{ current_data|safe }}');
+    const tempData = JSON.parse('{{ temp_data|safe }}');
+    const socData = JSON.parse('{{ soc_data|safe }}');
+    const sohData = JSON.parse('{{ soh_data|safe }}');
+    const powerData = JSON.parse('{{ power_data|safe }}');
+    
+    Chart.defaults.color = '#E0E0E0'; 
+    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)'; 
+    //Tα 5 μικρά γραφήματα
+    new Chart(document.getElementById('voltageChart').getContext('2d'), {
+        type: 'line', data: { labels: labels, datasets: [{ label: 'Τάση (Voltage V)', data: voltageData, borderColor: '#3273F6', backgroundColor: 'rgba(50, 115, 246, 0.2)', borderWidth: 2, fill: true, tension: 0.4 }] }
+    });
+
+    new Chart(document.getElementById('currentChart').getContext('2d'), {
+        type: 'line', data: { labels: labels, datasets: [{ label: 'Ρεύμα (Current A)', data: currentData, borderColor: '#F39C12', backgroundColor: 'rgba(243, 156, 18, 0.2)', borderWidth: 2, fill: true, tension: 0.4 }] }
+    });
+
+    new Chart(document.getElementById('tempChart').getContext('2d'), {
+        type: 'line', data: { labels: labels, datasets: [{ label: 'Θερμοκρασία (°C)', data: tempData, borderColor: '#E74C3C', backgroundColor: 'rgba(231, 76, 60, 0.2)', borderWidth: 2, fill: true, tension: 0.4 }] }
+    }); 
+    if (socData.length > 0) {
+        // Παίρνουμε την τελευταία τιμή κάθε λίστας
+        const latestSoC = socData[socData.length - 1];
+        const latestSoH = sohData[sohData.length - 1];
+        const latestPower = powerData[powerData.length - 1];
+
+        // Γράφουμε τα νούμερα στην HTML
+        document.getElementById('socValue').innerText = latestSoC.toFixed(1) + '%';
+        document.getElementById('sohValue').innerText = latestSoH.toFixed(1) + '%';
+        document.getElementById('powerValue').innerText = latestPower.toFixed(1) + ' W';
+
+        // Γεμίζουμε τις μπάρες (προαιρετικό εφέ)
+        document.getElementById('socBar').style.width = latestSoC + '%';
+        document.getElementById('sohBar').style.width = latestSoH + '%';
+    }
+
+    // 4.Pop-up (Modal)
+    let modalChartInstance = null;
+
+    function openModal(chartType) {
+        document.getElementById('chartModal').style.display = 'flex';
+        if (modalChartInstance) {
+            modalChartInstance.destroy(); // Καθαρίζει το προηγούμενο γράφημα
+        }
+        let mLabel, mData, mBorder, mBg, isPercentage = false;
+
+        // Επιλογή χρωμάτων και δεδομένων ανάλογα με το κλικ
+        if (chartType === 'voltage') { mLabel = 'Τάση (V)'; mData = voltageData; mBorder = '#3273F6'; mBg = 'rgba(50, 115, 246, 0.2)'; }
+        else if (chartType === 'current') { mLabel = 'Ρεύμα (A)'; mData = currentData; mBorder = '#F39C12'; mBg = 'rgba(243, 156, 18, 0.2)'; }
+        else if (chartType === 'temp') { mLabel = 'Θερμοκρασία (°C)'; mData = tempData; mBorder = '#E74C3C'; mBg = 'rgba(231, 76, 60, 0.2)'; }
+        else if (chartType === 'soc') { mLabel = 'SoC (%)'; mData = socData; mBorder = '#2ECC71'; mBg = 'rgba(46, 204, 113, 0.2)'; isPercentage = true; }
+        else if (chartType === 'soh') { mLabel = 'SoH (%)'; mData = sohData; mBorder = '#9B59B6'; mBg = 'rgba(155, 89, 182, 0.2)'; isPercentage = true; }
+        else if (chartType === 'power') { mLabel = 'Ισχύς (W)'; mData = powerData; mBorder = '#F1C40F'; mBg = 'rgba(241, 196, 15, 0.2)'; isPercentage = false; }
+        modalChartInstance = new Chart(document.getElementById('modalCanvas').getContext('2d'), {
+            type: 'line',
+            data: { labels: labels, datasets: [{ label: mLabel, data: mData, borderColor: mBorder, backgroundColor: mBg, borderWidth: 3, fill: true, tension: 0.4 }] },
+            options: { responsive: true, maintainAspectRatio: false, scales: isPercentage ? { y: { min: 0, max: 100 } } : {} }
+        });
+    }
+
+    function closeModal() {
+        document.getElementById('chartModal').style.display = 'none';
+        if (modalChartInstance) {
+            modalChartInstance.destroy();
+        }
+    }
+    
+    window.onclick = function(event) {
+        if (event.target === document.getElementById('chartModal')) {
+            closeModal();
+        }
+    }
+</script>
+{% endblock %}

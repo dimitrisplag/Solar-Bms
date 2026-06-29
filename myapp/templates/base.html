@@ -1,0 +1,29 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <title>My Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+{% if user.is_authenticated %}
+        <nav class="navbar">
+            <div class="brand">BMS IoT System</div>
+            <div>
+                <span>👤 {{ user.username }}</span>
+                <form action="{% url 'logout' %}" method="post" style="display:inline; margin-left: 20px;">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            </div>
+        </nav>
+    {% endif %}
+<main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+</html>

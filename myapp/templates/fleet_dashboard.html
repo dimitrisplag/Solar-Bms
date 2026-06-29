@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container container-fleet">
+    
+    <div class="fleet-header">
+        <h1 class="dashboard-title" style="margin-bottom: 0;">BMS Fleet</h1>
+        <div class="admin-badge">
+            <i class="fas fa-user-shield"></i> Administrator: <b>{{ user.username }}</b>
+        </div>
+    </div>
+
+    <div class="charts-row-3 kpi-row">
+        <div class="card dashboard-card kpi-card kpi-card-blue">
+            <h3 class="kpi-title">Total Devices</h3>
+            <p class="kpi-value">{{ total_devices }}</p>
+        </div>
+        
+        <div class="card dashboard-card kpi-card kpi-card-green">
+            <h3 class="kpi-title">Online</h3>
+            <p class="kpi-value green">{{ online_count }}</p>
+        </div>
+        
+        <div class="card dashboard-card kpi-card kpi-card-red">
+            <h3 class="kpi-title">Offline</h3>
+            <p class="kpi-value red">{{ offline_count }}</p>
+        </div>
+    </div>
+
+    {% if alerts %}
+    <h2 class="chart-section-title alerts-title">
+        ⚠️ Active Alerts (Requires Attention)
+    </h2>
+    <div class="alerts-container">
+        {% for alert in alerts %}
+            <div class="alert-box {% if alert.type == 'danger' %}alert-danger{% else %}alert-warning{% endif %}">
+                <span>{{ alert.msg }}</span>
+                <span>Device: {{ alert.device.name }} (MAC: {{ alert.device.mac_address }})</span>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <h2 class="chart-section-title">Network Status</h2>
+    <div class="card dashboard-card table-wrapper">
+        <table class="fleet-table">
+            <thead>
+                <tr>
+                    <th>Customer / Device</th>
+                    <th>Status</th>
+                    <th>Latest Contact</th>
+                    <th>SoC (%)</th>
+                    <th>Voltage (V)</th>
+                    <th>Temperature (°C)</th>
+                    <th>Watts</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in device_status_list %}
+                <tr>
+                    <td>
+                        <b>{{ item.device.name }}</b><br>
+                        <span class="text-muted">{{ item.device.mac_address }}</span>
+                    </td>
+                    
+                    <td>
+                        {% if item.is_online %}
+                            <span class="status-badge status-online">🟢 Online</span>
+                        {% else %}
+                            <span class="status-badge status-offline">🔴 Offline</span>
+                        {% endif %}
+                    </td>
+                    
+                    <td>
+                        {% if item.latest %}
+                            {{ item.latest.timestamp|date:"d/m/Y H:i" }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+
+                    <td class="{% if item.latest.soc < 20 %}text-danger{% else %}text-success{% endif %}">
+                        {% if item.latest %}{{ item.latest.soc|floatformat:1 }}%{% else %}-{% endif %}
+                    </td>
+
+                    <td>
+                        {% if item.latest %}{{ item.latest.voltage }}V{% else %}-{% endif %}
+                    </td>
+
+                    <td class="{% if item.latest.temperature > 45 %}text-danger{% endif %}">
+                        {% if item.latest %}{{ item.latest.temperature }}°C{% else %}-{% endif %}
+                    </td>
+
+                    <td>
+                        {% if item.latest %}{{ item.latest.power }} W{% else %}-{% endif %}
+                    </td>
+
+                    <td>
+                        <a href="{% url 'home' %}?device={{ item.device.pk }}" class="btn-action" style="text-decoration: none;">Analyze</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}
