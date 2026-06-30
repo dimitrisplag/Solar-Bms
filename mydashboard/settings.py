@@ -20,11 +20,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 SECRET_KEY = os.getenv('SECRET_KEY_1')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -74,15 +77,13 @@ WSGI_APPLICATION = 'mydashboard.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+import dj_database_url
 DATABASES = {
-'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',          
-        'USER': 'postgres',          
-        'PASSWORD': os.getenv('DATABASE_PASSWORD'),   # Ο κωδικός που βάλαμε στο Βήμα 2
-        'HOST': '127.0.0.1',         
-        'PORT': '5432',             
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 
@@ -120,7 +121,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-import os
+
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
@@ -129,5 +130,5 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER_1')
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL_1')
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_HOST_USER_1')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD_1')
