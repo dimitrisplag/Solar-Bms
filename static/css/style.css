@@ -1,0 +1,493 @@
+/* ==========================================================================
+   BASE STYLES - Core elements and resets
+   ========================================================================== */
+
+body {
+    background-color: #111217;
+    color: #E0E0E0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+}
+
+/* ==========================================================================
+   NAVIGATION - Navbar and links
+   ========================================================================== */
+
+/* Μενού Πλοήγησης */
+.navbar {
+    background-color: #22252B;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #3273F6;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+.navbar .brand { font-size: 1.2em; font-weight: bold; color: #3273F6; }
+.navbar a { color: #E0E0E0; text-decoration: none; margin-left: 20px; transition: color 0.3s; }
+.navbar a:hover { color: #00B4D8; }
+
+/* ==========================================================================
+   LAYOUT - Containers and wrappers
+   ========================================================================== */
+
+/* Κεντρικός Περιέκτης */
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* ==========================================================================
+   CARDS - Dashboard cards and containers
+   ========================================================================== */
+
+/* "Κουτιά" για φόρμες (Κάρτες) */
+.card {
+    background-color: #22252B;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+    max-width: 400px;
+    margin: 0 auto;
+}
+.card h2 { margin-top: 0; color: #ffffff; text-align: center; margin-bottom: 25px;}
+
+.helptext {
+    display: block;
+    font-size: 12px;
+    color: #9ca3af;
+    margin-top: 2px;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+.card ul {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-top: 2px; 
+    margin-bottom: 12px;
+    padding-left: 16px;
+    line-height: 1.4;
+}
+
+/* ==========================================================================
+   FORMS - Inputs, selects, and form elements
+   ========================================================================== */
+
+/* Φόρμες και Πεδία (Inputs) */
+input[type="text"], input[type="password"], input[type="email"] {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0 6px 0;
+    background-color: #181B1F;
+    border: 1px solid #444;
+    color: white;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+input:focus { border-color: #3273F6; outline: none; }
+
+/* ==========================================================================
+   BUTTONS - Action buttons
+   ========================================================================== */
+
+/* Κουμπιά */
+button {
+    background-color: #3273F6;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+button:hover { background-color: #00B4D8; }
+
+.logout-btn {
+    background-color: transparent;
+    border: 1px solid #E74C3C;
+    color: #E74C3C;
+    padding: 6px 15px;
+    width: auto;
+}
+.logout-btn:hover { background-color: #E74C3C; color: white; }
+
+/* ==========================================================================
+   MESSAGES - Error messages and notifications
+   ========================================================================== */
+
+/* Μηνύματα Λάθους */
+.error-msg {
+    color: #E74C3C;
+    background: rgba(231, 76, 60, 0.1);
+    padding: 10px;
+    border-radius: 5px;
+    border-left: 4px solid #E74C3C;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+}
+
+/* ==========================================================================
+   DASHBOARD - Dashboard specific elements
+   ========================================================================== */
+
+.dashboard-title {
+    color: #ffffff;
+    border-bottom: 2px solid #3273F6;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+}
+
+.dashboard-welcome {
+    margin-bottom: 30px;
+}
+
+.dashboard-card {
+    max-width: 100%; 
+    margin-bottom: 40px;
+}
+
+.device-title {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.device-item {
+    font-size: 16px;
+    color: #E0E0E0;
+}
+
+/* ==========================================================================
+   CHARTS - Chart layout and grids
+   ========================================================================== */
+
+.chart-section-title {
+    color: #ffffff;
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+.charts-row-3 {
+    display: flex;
+    gap: 20px; 
+    margin-bottom: 20px;
+}
+
+.charts-row-2 {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.charts-row-3 .dashboard-card,
+.charts-row-2 .dashboard-card {
+    flex: 1; 
+    min-width: 0; 
+    margin-bottom: 0; 
+}
+
+@media (max-width: 992px) {
+    .charts-row-3, .charts-row-2 {
+        flex-direction: column; 
+    }
+    .charts-row-3 .dashboard-card,
+    .charts-row-2 .dashboard-card {
+        margin-bottom: 20px;
+    }
+}
+
+/* ==========================================================================
+   MODAL - Popup windows
+   ========================================================================== */
+
+/* Λογική Modal */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85); 
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: #22252B; 
+    padding: 30px 20px 20px 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 1000px; 
+    height: 70vh; 
+    position: relative;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.8);
+}
+
+.close-btn {
+    position: absolute;
+    top: 5px;
+    right: 15px;
+    color: #9ca3af;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.1s;
+}
+
+.close-btn:hover {
+    color: #E74C3C; 
+}
+
+.clickable-card {
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.clickable-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 20px rgba(50, 115, 246, 0.3); 
+}
+
+.modal-canvas-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* ==========================================================================
+   UTILITIES - Helper classes
+   ========================================================================== */
+
+.links-bottom { text-align: center; margin-top: 20px; font-size: 0.9em; }
+.links-bottom a { color: #3273F6; text-decoration: none; }
+.links-bottom a:hover { text-decoration: underline; }
+
+.highlight-blue {
+    color: #3273F6;
+}
+
+/* ==========================================================================
+   DEVICE SELECTOR - Device selection UI
+   ========================================================================== */
+
+.device-selection-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.btn-device {
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+    /* Κληρονομεί τις βασικές ιδιότητες από το .btn-action */
+}
+
+/* Όταν το κουμπί είναι επιλεγμένο (active) */
+.btn-device.active {
+    background-color: #2ECC71;
+}
+
+.btn-device.active:hover {
+    background-color: #27ae60; 
+}
+
+.device-mac {
+    display: block; /* Αλλάζει γραμμή αυτόματα */
+    font-size: 0.8em;
+    opacity: 0.8;
+    margin-top: 4px;
+}
+
+/* ==========================================================================
+   FLEET DASHBOARD - Admin dashboard specific
+   ========================================================================== */
+
+.container-fleet {
+    max-width: 1400px; /* Πιο πλατύς περιέκτης για τον πίνακα */
+}
+
+.fleet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-badge {
+    color: #9ca3af;
+}
+
+/* ==========================================================================
+   KPI CARDS - Key Performance Indicators
+   ========================================================================== */
+
+/* Κάρτες Στατιστικών (KPIs) */
+.kpi-row {
+    margin-top: 20px;
+}
+.kpi-card {
+    text-align: center;
+}
+.kpi-card-blue { border-bottom: 4px solid #3273F6; }
+.kpi-card-green { border-bottom: 4px solid #2ECC71; }
+.kpi-card-red { border-bottom: 4px solid #E74C3C; }
+
+.kpi-title {
+    color: #9ca3af;
+    font-size: 1.1em;
+    margin: 0;
+}
+.kpi-value {
+    font-size: 2.5em;
+    font-weight: bold;
+    margin: 10px 0;
+    color: #fff;
+}
+.kpi-value.green { color: #2ECC71; }
+.kpi-value.red { color: #E74C3C; }
+
+/* ==========================================================================
+   ALERTS - Alert boxes and notifications
+   ========================================================================== */
+
+/* Συναγερμοί (Alerts) */
+.alerts-title {
+    color: #E74C3C;
+    margin-top: 30px;
+}
+.alerts-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+.alert-box {
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+}
+.alert-danger {
+    background-color: rgba(231, 76, 60, 0.2);
+    border-left: 5px solid #E74C3C;
+    color: #ff6b6b;
+}
+.alert-warning {
+    background-color: rgba(243, 156, 18, 0.2);
+    border-left: 5px solid #F39C12;
+    color: #feca57;
+}
+
+/* ==========================================================================
+   TABLE - Data tables
+   ========================================================================== */
+
+/* Πίνακας & Στήλες */
+.table-wrapper {
+    overflow-x: auto;
+}
+.fleet-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+.fleet-table th {
+    padding: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: #9ca3af;
+}
+.fleet-table td {
+    padding: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: background-color 0.2s;
+}
+.fleet-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* ==========================================================================
+   STATUS - Status badges and indicators
+   ========================================================================== */
+
+/* Badges (Ετικέτες κατάστασης) */
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+.status-online {
+    background-color: rgba(46, 204, 113, 0.2);
+    color: #2ECC71;
+}
+.status-offline {
+    background-color: rgba(231, 76, 60, 0.2);
+    color: #E74C3C;
+}
+
+/* ==========================================================================
+   TEXT COLORS - Utility text classes
+   ========================================================================== */
+
+/* Χρώματα Κειμένου */
+.text-danger { color: #E74C3C; font-weight: bold; }
+.text-success { color: #2ECC71; font-weight: bold; }
+.text-muted { color: #9ca3af; font-size: 0.85em; }
+
+/* ==========================================================================
+   TABLE ACTIONS - Table button styles
+   ========================================================================== */
+
+/* Κουμπί Πίνακα */
+.btn-action {
+    background-color: #3273F6;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 0.9em;
+}
+.btn-action:hover {
+    background-color: #00B4D8;
+}
+.kpi-card {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 30px 20px;
+    }
+    .chart-label {
+        font-size: 1.2rem;
+        color: #B0B0B0;
+        margin-bottom: 10px;
+    }
+    .display-number {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+    .text-success { color: #2ECC71; }
+    .text-purple { color: #9B59B6; }
+    .text-warning { color: #F1C40F; }
+    
+    .progress-bar-bg {
+        width: 80%;
+        height: 8px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    .progress-bar-fill {
+        height: 100%;
+        transition: width 0.5s ease-in-out;
+    }
